@@ -33,4 +33,50 @@ class CSVParserSpec extends FunSuite with ShouldMatchers {
 
     k should be (List("Apply","","Bottle","","","Cat"))
   }
+
+  test("Parsing a CSV with comma quoted fields") {
+    val k = new CSVParser().apply("\"Alpha\",\"Gamma\",\"Delta, Epsilon\",,\"Lambda\"")
+
+    k should be (List("Alpha", "Gamma", "Delta, Epsilon", "", "Lambda"))
+  }
+
+  test("Parsing a CSV with a blank last field") {
+    val k = new CSVParser().apply("\"Alpha\",\"Beta\",")
+
+    k should be (List("Alpha","Beta",""))
+  }
+
+  test("Parsing a CSV with a blank first field") {
+    val k = CSVParser(",Alpha,Beta")
+
+    k should be (List("","Alpha","Beta"))
+  }
+
+  test("Parsing a CSV with a blank first and last field") {
+    val k = CSVParser(",Alpha,Beta,")
+
+    k should be (List("","Alpha","Beta",""))
+  }
+
+  test("Complex CSV line") {
+    val l = """WP0001052328,"Tier 1",Stuart,Scanlon,stuart@stuartandlaura.com,"Stuart Scanlon",stuart@stuartandlaura.com,85.00,"June 8th, 2012",,Stuart,"Stuart, Scanlon",No,,"21 or over (may choose to drink alcohol)",,,,"12808 Matteson, Los Angeles, Ca, 90066",stuart@stuartandlaura.com,3104805170,"I participate year round!","Arbol Ardentro","""
+    val k = CSVParser(l)
+
+    println(k)
+
+    k(0) should be ("WP0001052328")
+    k(1) should be ("Tier 1")
+    k(2) should be ("Stuart")
+    k(3) should be ("Scanlon")
+  }
+
+  test("CSV with newlines in quoted fields (ugh - I know)") {
+    val l = "One,Two,'Holy\nCow',Four\nSeven,Eight\n"
+    val k = CSVParser.multi(l)(0)
+
+    k(0) should be ("One")
+    k(1) should be ("Two")
+    k(2) should be ("Holy\nCow")
+    k(3) should be ("Four")
+  }
 }
