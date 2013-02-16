@@ -79,4 +79,45 @@ class CSVParserSpec extends FunSuite with ShouldMatchers {
     k(2) should be ("Holy\nCow")
     k(3) should be ("Four")
   }
+
+
+  test("CSV with CRLFs") {
+    val l = "One,Two\r\nThree,Four\r\n"
+    val k = CSVParser.multi(l)
+
+    k(0)(0) should be ("One")
+    k(0)(1) should be ("Two")
+    k(1)(0) should be ("Three")
+    k(1)(1) should be ("Four")
+  }
+
+  test("CSV with trailining commas") {
+    val l = "A,B,,,\n"
+    val k = CSVParser.multi(l)
+    k.size should be (1)
+    k(0).size should be (5)
+    k(0)(0) should be ("A")
+    k(0)(1) should be ("B")
+    k(0)(2) should be ("")
+    k(0)(3) should be ("")
+    k(0)(4) should be ("")
+  }
+
+  test("CSV with double doubled double quotes") {
+    val l = "A,B,\"Mike \"\"Fast Fingers\"\" Joe\",Bar\n"
+    val k = CSVParser.multi(l)
+    k should have size (1)
+    k(0) should have size  (4)
+    k(0)(0) should be ("A")
+    k(0)(1) should be ("B")
+    k(0)(2) should be ("Mike \"Fast Fingers\" Joe")
+    k(0)(3) should be ("Bar")
+  }
+
+  test("CSV From Volunteers") {
+    val l = "FIRST NAME,LAST NAME,PLAYA NAME,PHONE #,E-MAIL,POSITION,WAIVE V TIX,RV,TICKET LEVEL,TICKET LINK SENT,READY TO SEND NEXT ROUND,PAID\r\nAdrianne,Kurkciyan,,1 (818) 427-3023,adrianne226@gmail.com,CIRCONAUTS,No,No,$40,,,\r\nAna,deAlvare,,337-280-5279,adealv1@mac.com,CIRCONAUTS,No,No,$40,,,\r\n";
+    val k = CSVParser.multi(l)
+
+    k(1)(0) should be ("Adrianne")
+  }
 }
