@@ -59,7 +59,7 @@ class CSVParserSpec extends FunSuite with ShouldMatchers {
   }
 
   test("Complex CSV line") {
-    val l = """WP0001052328,"Tier 1",Joe,Bloggs,joe@joeandlaura.com,"Joe Bloggs",joe@joeandlaura.com,85.00,"June 8th, 2012",,Joe,"Joe, Bloggs",No,,"21 or over (may choose to drink alcohol)",,,,"15558 Matteson, Los Angeles, Ca, 90066",joe@joeandlaura.com,3104805170,"I participate year round!","Arbol Ardentro","""
+    val l = """WP0001052328,"Tier 1",Joe,Bloggs,joe@joeandlaura.com,"Joe Bloggs",joe@joeandlaura.com,85.00,"June 8th, 2012",,Joe,"Joe, Bloggs",No,,"21 or over (may choose to drink alcohol)",,,,"1234 Matteson, Los Angeles, Ca, 90066",joe@joeandlaura.com,3104805170,"I participate year round!","Arbol Ardentro","""
     val k = CSVParser(l)
 
     println(k)
