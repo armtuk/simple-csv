@@ -14,24 +14,27 @@ class CSVParser extends RegexParsers {
     case failure: NoSuccess => {throw new Exception("Parse Failed " + failure.toString)}
   }
 
-  def multi(s: String): List[List[String]] = parseAll(fromFile, s.filter(_!='\r')) match {
-    case Success(result, _) => {
-      result
+  def multi(s: String): List[List[String]] = {
+    val t: String = s.trim().filter { x:Char => x!='\r' }
+    parseAll(fromFile, t) match {
+      case Success(result, _) => {
+        result
+      }
+      case failure: NoSuccess => {throw new Exception("Parse Failed " + failure.toString)}
     }
-    case failure: NoSuccess => {throw new Exception("Parse Failed " + failure.toString)}
   }
 
-  def fromFile:Parser[List[List[String]]] = rep1(fromCsv <~ "\n") ^^ {case x => x}
+  def fromFile:Parser[List[List[String]]] = fromCsv ~ rep('\n' ~> fromCsv) ^^ {case x ~ y => x :: y}
 
-  def fromCsv:Parser[List[String]] = rep1(mainToken <~ ",") ~ mainToken ^^ {case x ~ y => x :+ y}
+  def fromCsv:Parser[List[String]] = mainToken ~ rep("," ~> mainToken) ^^ { case x ~ y => x :: y}
 
-  def mainToken = (doubleQuotedTerm | singleQuotedTerm | unquotedTerm | "") ^^ {case "," => ""; case a => a}
+  def mainToken = (doubleQuotedTerm | singleQuotedTerm | unquotedTerm | "") ^^ {case a => a}
 
-  def doubleQuotedTerm: Parser[String] = "\"" ~> rep1(("\"" <~ "\"") | "[^\"]".r) <~ "\"" ^^ {case a => (""/:a)(_+_)}
+  def doubleQuotedTerm: Parser[String] = "\"" ~> rep(("\"" ~> "\"") | "[^\"]+".r) <~ "\"" ^^ {case a => (""/:a)(_+_)}
 
-  def singleQuotedTerm = "'" ~> "[^']+".r <~ "'" ^^ {case a => (""/:a)(_+_)}
+  def singleQuotedTerm = "'" ~> "[^']+".r <~ "'" ^^ {case a => a}
 
-  def unquotedTerm = "[^,\\n\\r]+".r ^^ {case a => (""/:a)(_+_)}
+  def unquotedTerm = "[^,\\n\\r]+".r ^^ {case a => a}
 
   override def skipWhitespace = false
 
