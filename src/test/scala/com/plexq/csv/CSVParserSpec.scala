@@ -115,7 +115,7 @@ class CSVParserSpec extends FunSuite with ShouldMatchers {
   }
 
   test("CSV From Volunteers") {
-    val l = "FIRST NAME,LAST NAME,PLAYA NAME,PHONE #,E-MAIL,POSITION,WAIVE V TIX,RV,TICKET LEVEL,TICKET LINK SENT,READY TO SEND NEXT ROUND,PAID\r\nJane,Greene,,1 (818) 427-3023,jane226@gmail.com,CIRCONAUTS,No,No,$40,,,\r\nAna,Jones,,337-555-5279,jane@mac.com,CIRCONAUTS,No,No,$40,,,\r\n";
+    val l = "FIRST NAME,LAST NAME,PLAYA NAME,PHONE #,E-MAIL,POSITION,WAIVE V TIX,RV,TICKET LEVEL,TICKET LINK SENT,READY TO SEND NEXT ROUND,PAID\r\nJane,Joe-Bob,,1 (818) 427-3023,jane226@example.com,THINGIES,No,No,$40,,,\r\nAna,Jones,,123-456-7843,jane@example.com,THINGIES,No,No,$40,,,\r\n";
     val k = CSVParser.multi(l)
 
     k(1)(0) should be ("Jane")
